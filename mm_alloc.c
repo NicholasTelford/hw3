@@ -29,7 +29,25 @@ void* mm_malloc(size_t size)
 	if(active!=NULL) {
 		
 	}
-	
+	//Split block into segments if active size is less than block size
+	segment = active;
+	size_t comparisonsize = active->size;
+	if((comparisonsize) < (sizeof(struct s_block))) {
+		segment->free = 'true';
+		active->free = 'false';
+	}
+	//Increase heap size when block too small
+	else{
+		if(extend !=NULL) {
+			
+			while(extend->size < active-size) {
+				extend->size = extend->size + 4096; //4096 = page size
+			}
+			int result = brk(*extend);
+			if(result == 0)
+				extend->free = 'false';
+		}
+	}
 }
 
 void* mm_realloc(void* ptr, size_t size)
